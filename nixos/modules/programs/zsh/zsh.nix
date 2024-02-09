@@ -86,6 +86,16 @@ in
         type = types.lines;
       };
 
+      interactiveShellInitSensibleDefaults = mkOption {
+        default = "";
+        description = lib.mdDoc ''
+          Shell script code called during interactive zsh shell initialisation,
+          unless ZSH_NO_SENSIBLE_DEFAULTS is previously set, for instance by
+          ~/.zshenv.
+        '';
+        type = types.lines;
+      };
+
       promptInit = mkOption {
         default = ''
           # Note that to manually override this in ~/.zshrc you should run `prompt off`
@@ -270,6 +280,10 @@ in
         ${cfge.interactiveShellInit}
 
         ${cfg.interactiveShellInit}
+
+        if [ -n "$ZSH_NO_SENSIBLE_DEFAULTS" ]; then
+          ${cfg.interactiveShellInitSensibleDefaults}
+        fi
 
         ${optionalString cfg.enableLsColors ''
           # Extra colors for directory listings.
